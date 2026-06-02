@@ -1,0 +1,905 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);color:var(--color-text-primary);font-size:14px;line-height:1.6}
+.app{max-width:700px;margin:0 auto;padding:1rem 0}
+.nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem;padding:12px;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary)}
+.nav-btn{padding:6px 12px;font-size:12px;font-weight:500;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer;transition:all 0.15s}
+.nav-btn:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+.nav-btn.active{background:var(--color-background-primary);border-color:var(--color-border-primary);color:var(--color-text-primary);font-weight:500}
+.section{display:none}.section.active{display:block}
+.page-title{font-size:18px;font-weight:500;margin-bottom:4px;color:var(--color-text-primary)}
+.page-sub{font-size:13px;color:var(--color-text-secondary);margin-bottom:1.5rem}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:1rem}
+.card-title{font-size:14px;font-weight:500;margin-bottom:0.75rem;color:var(--color-text-primary)}
+.badge{display:inline-block;padding:2px 8px;border-radius:var(--border-radius-md);font-size:11px;font-weight:500}
+.badge-info{background:var(--color-background-info);color:var(--color-text-info)}
+.badge-success{background:var(--color-background-success);color:var(--color-text-success)}
+.badge-warning{background:var(--color-background-warning);color:var(--color-text-warning)}
+.badge-danger{background:var(--color-background-danger);color:var(--color-text-danger)}
+.unit-tabs{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.unit-tab{padding:6px 14px;font-size:12px;font-weight:500;border:0.5px solid var(--color-border-secondary);border-radius:20px;background:transparent;color:var(--color-text-secondary);cursor:pointer;transition:all 0.15s}
+.unit-tab.active{border-color:var(--color-border-primary);color:var(--color-text-primary);background:var(--color-background-secondary)}
+.unit-content{display:none}.unit-content.active{display:block}
+.topic{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);margin-bottom:10px;overflow:hidden}
+.topic-header{padding:10px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:var(--color-background-secondary)}
+.topic-header:hover{background:var(--color-background-tertiary)}
+.topic-title{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.topic-meta{display:flex;gap:6px;align-items:center}
+.topic-body{display:none;padding:12px 14px;border-top:0.5px solid var(--color-border-tertiary)}
+.topic-body.open{display:block}
+.dim{color:var(--color-text-secondary);font-size:13px}
+.kw{display:inline-block;padding:2px 6px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:4px;font-size:11px;margin:2px;color:var(--color-text-secondary)}
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.metric{padding:12px;background:var(--color-background-secondary);border-radius:var(--border-radius-md)}
+.metric-val{font-size:22px;font-weight:500;color:var(--color-text-primary)}
+.metric-lbl{font-size:12px;color:var(--color-text-secondary);margin-top:2px}
+.star-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.star-row:last-child{border-bottom:none}
+.stars{color:var(--color-text-warning);font-size:13px;letter-spacing:1px}
+.pyq-row{display:grid;grid-template-columns:auto 1fr auto auto;gap:8px;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:12px}
+.pyq-row:last-child{border-bottom:none}
+.q-item{padding:8px 12px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);font-size:12px;color:var(--color-text-primary);margin-bottom:6px;line-height:1.5}
+.q-num{font-weight:500;color:var(--color-text-secondary);font-size:11px;margin-bottom:2px}
+.divider{height:0.5px;background:var(--color-border-tertiary);margin:1rem 0}
+.tag{font-size:11px;padding:2px 7px;border-radius:3px;border:0.5px solid}
+.tag-u1{border-color:#378ADD;color:#378ADD}
+.tag-u2{border-color:#1D9E75;color:#1D9E75}
+.tag-u3{border-color:#D85A30;color:#D85A30}
+.tag-u4{border-color:#7F77DD;color:#7F77DD}
+.progress-bar{height:6px;background:var(--color-border-tertiary);border-radius:3px;margin-top:6px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;transition:width 0.3s}
+.chev{font-size:16px;color:var(--color-text-tertiary);transition:transform 0.2s}
+.chev.open{transform:rotate(180deg)}
+.revision-block{padding:10px 14px;border-left:3px solid;border-radius:0 var(--border-radius-md) var(--border-radius-md) 0;margin-bottom:8px;font-size:13px;line-height:1.6}
+.rb-blue{border-color:#378ADD;background:#E6F1FB}
+.rb-green{border-color:#1D9E75;background:#E1F5EE}
+.rb-amber{border-color:#EF9F27;background:#FAEEDA}
+.rb-coral{border-color:#D85A30;background:#FAECE7}
+.rb-purple{border-color:#7F77DD;background:#EEEDFE}
+.fact-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fact-item{padding:10px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);font-size:12px}
+.fact-label{font-weight:500;font-size:11px;color:var(--color-text-secondary);margin-bottom:4px}
+</style>
+
+<div class="app">
+<h2 class="sr-only">BBA (B&I) 310 – Marketing of Financial Products and Services: Complete Study Guide</h2>
+
+<div style="padding:14px 16px;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);margin-bottom:1rem">
+<div style="font-size:11px;color:var(--color-text-secondary);font-weight:500;letter-spacing:0.5px;margin-bottom:4px">GGSIPU · BBA (B&I) 310</div>
+<div style="font-size:17px;font-weight:500;color:var(--color-text-primary)">Marketing of Financial Products & Services</div>
+<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+<span class="badge badge-info">4 Units</span>
+<span class="badge badge-success">75 Marks</span>
+<span class="badge badge-warning">3 PYQs Analysed</span>
+<span class="badge" style="background:var(--color-background-secondary);color:var(--color-text-secondary);border:0.5px solid var(--color-border-secondary)">56 Hours</span>
+</div>
+</div>
+
+<nav class="nav">
+<button class="nav-btn active" onclick="showSection('overview')">Overview</button>
+<button class="nav-btn" onclick="showSection('pyq')">PYQ Analysis</button>
+<button class="nav-btn" onclick="showSection('notes')">Unit Notes</button>
+<button class="nav-btn" onclick="showSection('revision')">Quick Revision</button>
+<button class="nav-btn" onclick="showSection('predict')">Exam Prediction</button>
+</nav>
+
+<!-- OVERVIEW -->
+<div class="section active" id="s-overview">
+<div class="page-title">Course overview</div>
+<div class="page-sub">Syllabus structure, unit importance & study strategy</div>
+
+<div class="row-3" style="margin-bottom:1rem">
+<div class="metric"><div class="metric-val">4</div><div class="metric-lbl">Units</div></div>
+<div class="metric"><div class="metric-val">56</div><div class="metric-lbl">Teaching hours</div></div>
+<div class="metric"><div class="metric-val">75</div><div class="metric-lbl">Max marks</div></div>
+</div>
+
+<div class="card">
+<div class="card-title">Unit-wise weightage (based on PYQ frequency)</div>
+<div style="margin-bottom:10px">
+<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>Unit I – Marketing of Financial Services</span><span class="badge badge-warning">High</span></div>
+<div class="progress-bar"><div class="progress-fill" style="width:85%;background:#378ADD"></div></div>
+</div>
+<div style="margin-bottom:10px">
+<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>Unit II – Retail Banking</span><span class="badge badge-info">High</span></div>
+<div class="progress-bar"><div class="progress-fill" style="width:80%;background:#1D9E75"></div></div>
+</div>
+<div style="margin-bottom:10px">
+<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>Unit III – Mutual Funds, Insurance & Pension</span><span class="badge badge-warning">High</span></div>
+<div class="progress-bar"><div class="progress-fill" style="width:75%;background:#D85A30"></div></div>
+</div>
+<div>
+<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>Unit IV – Distribution & Globalisation</span><span class="badge badge-info">Moderate</span></div>
+<div class="progress-bar"><div class="progress-fill" style="width:70%;background:#7F77DD"></div></div>
+</div>
+</div>
+
+<div class="card">
+<div class="card-title">Exam pattern</div>
+<div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:8px">2024 pattern (latest) – Attempt any 5, internal choice</div>
+<div class="fact-grid">
+<div class="fact-item"><div class="fact-label">Section A</div>Attempt any 5 of 6 short questions · 5×5 = 25 marks</div>
+<div class="fact-item"><div class="fact-label">Section B</div>4 long questions with OR options · 4×12.5 = 50 marks</div>
+<div class="fact-item"><div class="fact-label">Time</div>3 hours · Total 75 marks</div>
+<div class="fact-item"><div class="fact-label">Tip</div>Attempt all long questions; each answer ~2–3 pages</div>
+</div>
+</div>
+
+<div class="card">
+<div class="card-title">Key regulators & institutions (must-know)</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+<div class="fact-item"><div class="fact-label">Securities markets</div>SEBI – Securities & Exchange Board of India</div>
+<div class="fact-item"><div class="fact-label">Insurance</div>IRDAI – Insurance Regulatory & Development Authority</div>
+<div class="fact-item"><div class="fact-label">Banking</div>RBI – Reserve Bank of India</div>
+<div class="fact-item"><div class="fact-label">Pension</div>PFRDA – Pension Fund Regulatory & Development Authority</div>
+<div class="fact-item"><div class="fact-label">Mutual Funds</div>AMFI – Association of Mutual Funds in India</div>
+<div class="fact-item"><div class="fact-label">Capital Markets</div>NSE / BSE – Stock Exchanges</div>
+</div>
+</div>
+</div>
+
+<!-- PYQ ANALYSIS -->
+<div class="section" id="s-pyq">
+<div class="page-title">PYQ analysis</div>
+<div class="page-sub">Frequency & trends from 2017, 2018, 2024 papers</div>
+
+<div class="card">
+<div class="card-title">Topic frequency table</div>
+<div style="overflow-x:auto">
+<table style="width:100%;border-collapse:collapse;font-size:12px">
+<thead>
+<tr style="background:var(--color-background-secondary)">
+<th style="padding:8px 10px;text-align:left;font-weight:500;border-bottom:0.5px solid var(--color-border-secondary)">Topic</th>
+<th style="padding:8px;text-align:center;font-weight:500;border-bottom:0.5px solid var(--color-border-secondary)">Years</th>
+<th style="padding:8px;text-align:center;font-weight:500;border-bottom:0.5px solid var(--color-border-secondary)">Freq</th>
+<th style="padding:8px;text-align:center;font-weight:500;border-bottom:0.5px solid var(--color-border-secondary)">Marks</th>
+<th style="padding:8px;text-align:center;font-weight:500;border-bottom:0.5px solid var(--color-border-secondary)">Prob</th>
+</tr>
+</thead>
+<tbody id="pyq-table-body"></tbody>
+</table>
+</div>
+</div>
+
+<div class="card">
+<div class="card-title">Most repeated questions (verbatim / near-verbatim)</div>
+<div id="repeated-qs"></div>
+</div>
+
+<div class="card">
+<div class="card-title">Frequently asked short notes (5-mark topics)</div>
+<div id="short-notes-list"></div>
+</div>
+</div>
+
+<!-- UNIT NOTES -->
+<div class="section" id="s-notes">
+<div class="page-title">Unit-wise notes</div>
+<div class="page-sub">Complete exam-oriented notes for every syllabus topic</div>
+<div class="unit-tabs" id="unit-tabs"></div>
+<div id="unit-contents"></div>
+</div>
+
+<!-- QUICK REVISION -->
+<div class="section" id="s-revision">
+<div class="page-title">Quick revision</div>
+<div class="page-sub">High-yield facts, formulae, and one-page sheets</div>
+<div class="unit-tabs" id="rev-tabs"></div>
+<div id="rev-contents"></div>
+</div>
+
+<!-- EXAM PREDICTION -->
+<div class="section" id="s-predict">
+<div class="page-title">Exam prediction</div>
+<div class="page-sub">Most probable questions ranked by importance</div>
+
+<div class="card">
+<div class="card-title">Topic importance ranking</div>
+<div id="importance-list"></div>
+</div>
+
+<div class="card">
+<div class="card-title">Most probable short questions (5 marks)</div>
+<div id="pred-short"></div>
+</div>
+
+<div class="card">
+<div class="card-title">Most probable long questions (12.5 marks)</div>
+<div id="pred-long"></div>
+</div>
+</div>
+</div>
+
+<script>
+const DATA = {
+  pyqTopics:[
+    {topic:"Marketing of Financial Services – Definition & Significance",unit:1,years:["2024","2017"],freq:2,marks:"15/12.5",prob:"★★★★★"},
+    {topic:"7Ps / Marketing Mix in Banking",unit:1,years:["2017","2018"],freq:2,marks:"15",prob:"★★★★★"},
+    {topic:"Financial Markets in India (Money, Capital, etc.)",unit:1,years:["2018","2017"],freq:2,marks:"15",prob:"★★★★"},
+    {topic:"CRM in Financial Services / Relationship Marketing",unit:1,years:["2024","2018"],freq:2,marks:"15/12.5",prob:"★★★★★"},
+    {topic:"Plastic Money / Electronic Money / Debit-Credit Cards",unit:2,years:["2024","2017"],freq:2,marks:"5/15",prob:"★★★★★"},
+    {topic:"Retail Banking – Products (Loans, Saving Accounts)",unit:2,years:["2018","2017"],freq:2,marks:"7.5/15",prob:"★★★★"},
+    {topic:"Delivery Channels / Multiple Delivery Channels",unit:2,years:["2018","2017"],freq:2,marks:"15",prob:"★★★★★"},
+    {topic:"Mutual Funds – Characteristics & Marketing Strategies",unit:3,years:["2018","2017"],freq:2,marks:"15",prob:"★★★★★"},
+    {topic:"Non-Life Insurance Products",unit:3,years:["2024","2018"],freq:2,marks:"12.5/15",prob:"★★★★★"},
+    {topic:"National Pension Scheme (NPS)",unit:3,years:["2024","2017"],freq:2,marks:"5",prob:"★★★★"},
+    {topic:"Marketing of Pension Funds",unit:3,years:["2017"],freq:1,marks:"15",prob:"★★★★"},
+    {topic:"Bancassurance",unit:4,years:["2024"],freq:1,marks:"5",prob:"★★★★"},
+    {topic:"Public Relations & Publicity",unit:4,years:["2018","2017"],freq:2,marks:"7.5",prob:"★★★★"},
+    {topic:"Globalisation & Impact on Financial Services",unit:4,years:["2024","2018","2017"],freq:3,marks:"5/7.5/15",prob:"★★★★★"},
+    {topic:"Distribution of Financial Services",unit:4,years:["2024"],freq:1,marks:"12.5",prob:"★★★★"},
+    {topic:"Marketing Research in Banking",unit:4,years:["2017"],freq:1,marks:"15",prob:"★★★"},
+    {topic:"Life Insurance Products",unit:3,years:["2024"],freq:1,marks:"12.5",prob:"★★★★"},
+    {topic:"Demographic / Technological impact on Retail Banking",unit:2,years:["2024"],freq:1,marks:"12.5",prob:"★★★"},
+  ],
+  repeatedQs:[
+    {q:"Explain the concept of relationship marketing / CRM. What is its importance in marketing of financial services?",years:"2024, 2018",tag:"u1"},
+    {q:"Discuss how the 7Ps / 3 additional Ps of marketing mix are important for marketing of financial services.",years:"2018, 2017",tag:"u1"},
+    {q:"Explain what is a financial market and provide an overview of the various types of financial markets in India.",years:"2018, 2017",tag:"u1"},
+    {q:"What are the unique characteristics of Mutual Funds in India? What marketing strategies are used? Discuss with examples.",years:"2018, 2017",tag:"u3"},
+    {q:"Explain the different types of non-life insurance products available in the Indian market.",years:"2024, 2018",tag:"u3"},
+    {q:"Retail Banking today employs an array of delivery channels. Elaborate with reference to multiple delivery channels.",years:"2018, 2017",tag:"u2"},
+    {q:"What is globalisation? How has globalisation impacted the financial services industry in India?",years:"2024, 2018, 2017",tag:"u4"},
+    {q:"Write short notes on: Role of Public Relations and Publicity in promoting financial services.",years:"2018, 2017",tag:"u4"},
+  ],
+  shortNotes:[
+    "Money market vs Capital market","National Pension Scheme (NPS) – features","Bancassurance – concept & features",
+    "Benefits of plastic money","Importance of mutual fund education for retail investors","Globalisation and Indian public sector banks",
+    "Types of saving accounts","Barter card","Role of PR and publicity in financial services","Image building in banking",
+    "AMFI and its role","Types of mutual funds","Housing loan features","Educational loan","Conveyance loan"
+  ],
+  units:[
+    {
+      id:"u1",label:"Unit I",title:"Marketing of Financial Services",
+      topics:[
+        {title:"Conceptual Framework of Financial Services",stars:"★★★★★",tag:"u1",
+         content:{
+           def:"Financial services are economic services provided by the finance industry, encompassing a broad range of businesses that manage money (banks, insurance, credit, investments).",
+           features:["Intangibility – cannot be touched or seen","Inseparability – production and consumption simultaneous","Heterogeneity – vary from customer to customer","Perishability – cannot be stored","Fiduciary nature – trust-based relationships","Dominance of regulation – governed by SEBI, RBI, IRDAI, PFRDA"],
+           importance:["Facilitates capital formation","Supports economic growth","Enables risk management","Promotes financial inclusion"],
+           challenges:["Difficulty in differentiation","High regulation compliance cost","Customer trust building","Information asymmetry"],
+           keywords:["Intangibility","Inseparability","Fiduciary","Financial inclusion","Capital formation"]
+         }
+        },
+        {title:"Types of Financial Markets in India",stars:"★★★★",tag:"u1",
+         content:{
+           def:"Financial markets are platforms where buyers and sellers trade financial instruments such as stocks, bonds, currencies, and derivatives.",
+           types:["Money Market – short-term funds (<1 year); instruments: T-bills, CPs, CDs, Call money","Capital Market – long-term funds (>1 year); instruments: shares, bonds, debentures","Primary Market – new issues of securities (IPO, FPO)","Secondary Market – trading of existing securities (NSE, BSE)","Forex Market – exchange of foreign currencies","Derivative Market – futures, options, swaps","Debt Market – government and corporate bonds"],
+           keywords:["Money market","Capital market","SEBI","NSE","BSE","Primary market","Secondary market","Derivative"]
+         }
+        },
+        {title:"Concept of Marketing & Marketing of Financial Services",stars:"★★★★★",tag:"u1",
+         content:{
+           def:"Marketing is the activity, set of institutions, and processes for creating, communicating, delivering, and exchanging offerings that have value for customers, clients, partners, and society. Marketing of financial services applies these principles to intangible, trust-based financial products.",
+           features:["Relationship-oriented","Highly regulated","Customer education essential","Brand and trust critical","Digital transformation accelerating"],
+           process:["Market segmentation → Targeting → Positioning → Marketing mix execution → Feedback"],
+           importance:["Attract and retain customers","Build trust and brand loyalty","Educate customers about products","Increase market share","Support financial inclusion"],
+           keywords:["STP","Relationship marketing","CRM","Brand loyalty","Financial literacy"]
+         }
+        },
+        {title:"Marketing Mix in Banking (7Ps)",stars:"★★★★★",tag:"u1",
+         content:{
+           def:"The marketing mix for banking services extends the traditional 4Ps (Product, Price, Place, Promotion) to 7Ps by adding People, Process, and Physical Evidence.",
+           types:[
+             "Product – loans, deposits, cards, investment products",
+             "Price – interest rates, fees, service charges",
+             "Place – branch network, ATMs, digital channels",
+             "Promotion – advertising, PR, personal selling, sales promotion",
+             "People – bank staff, relationship managers, customer service",
+             "Process – account opening, loan disbursement, transaction processing",
+             "Physical Evidence – branch ambience, passbooks, website UX"
+           ],
+           keywords:["7Ps","Product","Price","Place","Promotion","People","Process","Physical Evidence","Services marketing"]
+         }
+        },
+        {title:"Relationship Marketing & CRM",stars:"★★★★★",tag:"u1",
+         content:{
+           def:"Relationship marketing focuses on building long-term customer relationships rather than one-time transactions. CRM (Customer Relationship Management) is a strategy to manage all interactions with current and potential customers.",
+           features:["Long-term orientation","Customer lifetime value focus","Personalised communication","Cross-selling and up-selling","Data-driven insights"],
+           importance:["Reduces customer acquisition cost","Increases loyalty","Improves customer retention","Enables personalised offers","Drives profitability"],
+           tools:["CRM software (Salesforce, etc.)","Customer segmentation","Loyalty programmes","Feedback mechanisms","Net Promoter Score (NPS)"],
+           keywords:["CRM","Customer lifetime value","Retention","Cross-selling","Personalisation","Loyalty"]
+         }
+        }
+      ],
+      shortNotes:[
+        "Define financial services and explain its characteristics",
+        "Distinguish between money market and capital market",
+        "Explain the concept of marketing with reference to financial services",
+        "What are the 7Ps of marketing mix in banking?",
+        "What is relationship marketing? How does it differ from transactional marketing?",
+        "Explain the role of SEBI in Indian financial markets",
+        "What is CRM? Why is it important for banks?",
+        "Explain the concept of primary and secondary markets",
+        "What is financial inclusion? How does marketing contribute to it?",
+        "Describe the challenges in marketing of financial services",
+        "Explain the significance of marketing of financial services in contemporary business",
+        "What is STP strategy in financial services marketing?",
+        "Explain the concept of brand building in banking",
+        "What is the role of digital marketing in financial services?",
+        "Distinguish between product marketing and services marketing"
+      ],
+      longQs:[
+        "Define marketing of financial services and explain its significance in the contemporary business landscape. How has it changed over the previous two decades?",
+        "Explain the concept of relationship marketing. What is the importance of CRM in marketing of financial services?",
+        "Explain the concept of 7Ps of marketing mix of services. Explain the relevance of each P with suitable examples from banking.",
+        "What are the unique challenges involved in marketing of financial services? Discuss the characteristics of financial services and the marketing challenges involved.",
+        "Explain what is a financial market and provide an overview of the various types of financial markets in India.",
+        "Discuss the potential impact of demographic shifts, technological advancements, and macroeconomic trends on the retail banking landscape in India.",
+        "Discuss challenges specific to marketing in banking, such as regulatory constraints and trust-building. How do banks develop and manage their product offerings?",
+        "How have financial services marketing strategies evolved with the advent of digital platforms and mobile banking?",
+        "Explain the role of market segmentation and targeting in the marketing of financial services.",
+        "What is the significance of customer education in financial services marketing? How do banks educate their customers?",
+        "Describe the importance of brand equity in the financial services sector with examples from Indian banks.",
+        "Explain the concept of integrated marketing communications (IMC) in the context of banking.",
+        "How do banks use social media and digital platforms for marketing? Give examples.",
+        "Explain the competitive landscape of financial services in India and the marketing strategies used.",
+        "What are the ethical dimensions of marketing financial products and services?"
+      ]
+    },
+    {
+      id:"u2",label:"Unit II",title:"Retail Banking",
+      topics:[
+        {title:"Concept and Importance of Retail Banking",stars:"★★★★",tag:"u2",
+         content:{
+           def:"Retail banking, also known as consumer banking or personal banking, refers to the provision of banking services to individual consumers rather than corporations or other banks.",
+           features:["Mass market oriented","Standardised products","High volume, low value transactions","Wide branch/ATM network","Focus on individual needs"],
+           importance:["Mobilises household savings","Provides consumer credit","Supports financial inclusion","Revenue diversification for banks","Drives economic consumption"],
+           keywords:["Retail banking","Consumer banking","Financial inclusion","Savings mobilisation"]
+         }
+        },
+        {title:"Retail Banking Products",stars:"★★★★★",tag:"u2",
+         content:{
+           def:"Retail banking products include a range of financial offerings designed to meet the everyday financial needs of individuals.",
+           types:[
+             "Housing Loan – secured loan for purchase/construction of property; LTV up to 90%; regulated by NHB and RBI",
+             "Conveyance Loan – auto/vehicle loan for purchase of cars, two-wheelers; secured against vehicle",
+             "Personal Loan – unsecured loan for any personal purpose; higher interest rate; no collateral",
+             "Educational Loan – for higher studies in India/abroad; govt subsidy schemes available; moratorium period",
+             "Loan for Retail Traders – working capital/term loans for small businesses; priority sector lending",
+             "Plastic Money – debit cards, credit cards, prepaid cards, co-branded cards",
+             "Types of Saving Accounts – regular, salary, student, senior citizen, zero-balance (BSBD)",
+             "Barter Card – a pre-loaded card used in barter exchange networks"
+           ],
+           keywords:["Housing loan","Personal loan","Educational loan","Plastic money","Debit card","Credit card","Saving account"]
+         }
+        },
+        {title:"Plastic Money (Debit, Credit, Prepaid Cards)",stars:"★★★★★",tag:"u2",
+         content:{
+           def:"Plastic money refers to hard plastic cards used as a means of payment in lieu of actual banknotes. It includes debit cards, credit cards, prepaid cards, and smart cards.",
+           types:["Debit Card – linked to bank account; amount debited instantly","Credit Card – borrow money from bank; pay later; credit limit","Prepaid Card – preloaded with fixed amount; no bank account needed","Co-branded Card – issued jointly by bank and merchant","Smart Card – embedded microchip for enhanced security"],
+           features:["Convenience","Security (PIN, OTP, CVV)","Acceptance worldwide","Contactless payment","EMI facility (credit cards)","Reward points"],
+           advantages:["Reduces cash carrying risk","Enables online payments","Builds credit score","Cashback and rewards","Emergency credit access"],
+           limitations:["Risk of fraud/phishing","Overspending tendency","Annual/renewal fees","Interest charges on credit cards"],
+           keywords:["Debit card","Credit card","Prepaid card","NFC","Contactless","EMI","Reward points","POS terminal"]
+         }
+        },
+        {title:"Types of Saving Accounts",stars:"★★★",tag:"u2",
+         content:{
+           def:"A savings account is a deposit account held at a bank that provides a modest interest rate while keeping funds accessible.",
+           types:["Regular Savings Account – standard account for individuals","Salary Account – zero-balance; linked to employer","Student Account – for students; lower minimum balance","Senior Citizen Account – higher interest rate","Zero-Balance Account / BSBD – Basic Savings Bank Deposit (financial inclusion)","Recurring Deposit Account – fixed monthly deposit","Joint Account – operated by two or more persons"],
+           keywords:["BSBD","Zero balance","Jan Dhan","Senior citizen","Salary account"]
+         }
+        },
+        {title:"Attracting and Retaining Bank Customers",stars:"★★★★",tag:"u2",
+         content:{
+           def:"Customer acquisition and retention are core objectives of retail banking marketing.",
+           strategies:["Digital onboarding and zero-paperwork KYC","Personalised offers and product bundling","Loyalty programmes and reward schemes","Relationship management (dedicated RM for HNI)","Superior customer service and grievance redressal","Competitive pricing of products","Financial literacy campaigns","Cross-selling and up-selling"],
+           keywords:["Retention","Loyalty","KYC","Personalisation","Cross-selling","HNI","PMJDY"]
+         }
+        }
+      ],
+      shortNotes:[
+        "Define retail banking and explain its importance",
+        "What is a housing loan? Explain its key features",
+        "Explain personal loan and its distinguishing features from other loans",
+        "What is plastic money? Explain its benefits over traditional payment methods",
+        "Differentiate between debit card and credit card",
+        "What are the types of saving accounts available in India?",
+        "Explain educational loan and government schemes supporting it",
+        "What is conveyance loan? Who can avail it?",
+        "What is a barter card?",
+        "Explain the concept of loan for retail traders",
+        "What strategies do banks use to attract customers?",
+        "Explain how banks retain their existing customers",
+        "What is zero-balance account? Explain BSBD",
+        "What is salary account? How is it different from regular savings?",
+        "Explain the role of technology in retail banking"
+      ],
+      longQs:[
+        "Discuss the various retail banking products offered by Indian commercial banks. Explain the features and importance of each.",
+        "What are the unique challenges involved in marketing retail banking products? Discuss with examples.",
+        "Explain the concept of plastic money. How has it transformed the payment landscape in India?",
+        "Discuss the potential impact of demographic shifts, technological advancements, and macroeconomic trends on the retail banking landscape in India.",
+        "Describe a set of best practices that can help credit card marketers make their card the most preferred card in customers' wallets.",
+        "Explain the strategies banks use to attract and retain retail banking customers in a competitive environment.",
+        "Retail banking today employs an array of delivery channels. Elaborate on the various multiple delivery channels used by banks.",
+        "What is CRM in retail banking? How does it help in customer retention and cross-selling?",
+        "Explain the role of digital banking in transforming retail banking products and services.",
+        "Discuss the regulatory framework governing retail banking products in India.",
+        "How have government schemes (PMJDY, PM Mudra Yojana) influenced retail banking marketing?",
+        "Explain the concept of financial inclusion in the context of retail banking.",
+        "What is priority sector lending? How does it relate to retail banking for traders?",
+        "Explain the housing loan market in India. What are the key marketing strategies used?",
+        "Discuss the evolving nature of retail banking from branch-based to omni-channel banking."
+      ]
+    },
+    {
+      id:"u3",label:"Unit III",title:"Mutual Funds, Insurance & Pension",
+      topics:[
+        {title:"Mutual Funds in India",stars:"★★★★★",tag:"u3",
+         content:{
+           def:"A mutual fund is a pool of money collected from multiple investors and invested in securities such as stocks, bonds, and money market instruments. It is managed by an Asset Management Company (AMC).",
+           features:["Professional management","Diversification","Liquidity (open-ended funds)","Transparency (daily NAV)","Regulated by SEBI","Low minimum investment (SIP from ₹500)","Units held as ownership"],
+           types:["By Structure: Open-ended, Close-ended, Interval","By Asset Class: Equity, Debt, Hybrid, Solution-oriented, Index/ETF","By Risk: Low (liquid, debt), Moderate (balanced), High (equity, sectoral)"],
+           process:["Investor → AMC → Units allotted → NAV based → Returns (dividend/growth)"],
+           keywords:["NAV","AMC","SEBI","AMFI","SIP","AUM","Open-ended","Equity fund","Debt fund","Hybrid"]
+         }
+        },
+        {title:"Marketing Strategies of Mutual Funds",stars:"★★★★★",tag:"u3",
+         content:{
+           def:"Marketing strategies for mutual funds aim to educate investors, build trust, and increase AUM (Assets Under Management).",
+           strategies:[
+             "Investor education campaigns (SEBI's 'Mutual Fund Sahi Hai')",
+             "SIP marketing – systematic, disciplined investment message",
+             "Distribution through banks, IFAs, and online platforms (Zerodha, Groww)",
+             "Digital onboarding and paperless KYC",
+             "Goal-based marketing (retirement, education, wealth creation)",
+             "Social media and influencer campaigns",
+             "Comparative performance advertising (CAGR highlighting)",
+             "Tax benefit campaigns (ELSS – Section 80C)"
+           ],
+           challenges:["Low financial literacy","Perceived risk","Market volatility impacting investor confidence","Competition from bank FDs and gold"],
+           keywords:["AUM","ELSS","SIP","SEBI","Mutual Fund Sahi Hai","IFA","Goal-based","KYC"]
+         }
+        },
+        {title:"Life Insurance Products",stars:"★★★★",tag:"u3",
+         content:{
+           def:"Life insurance is a contract between the insurer and insured where the insurer pays a sum upon the death of the insured or after a specified term, in exchange for premiums.",
+           types:["Term Insurance – pure protection; high cover, low premium; no maturity benefit","Endowment Plan – protection + savings; maturity benefit","Whole Life Policy – covers entire life; surrender value","ULIP (Unit Linked Insurance Plan) – insurance + market-linked investment","Money Back Policy – periodic payouts during policy term","Annuity/Pension Plan – regular income post-retirement","Child Plans – savings for child's future"],
+           regulator:"IRDAI – Insurance Regulatory and Development Authority of India",
+           keywords:["Term insurance","ULIP","Endowment","LIC","IRDAI","Premium","Sum assured","Mortality charge"]
+         }
+        },
+        {title:"Non-Life Insurance Products",stars:"★★★★★",tag:"u3",
+         content:{
+           def:"Non-life insurance (general insurance) provides financial protection against losses other than death – property, health, vehicle, liability.",
+           types:["Health Insurance – hospitalisation, critical illness, senior citizen","Motor Insurance – third-party (mandatory) + comprehensive","Home/Property Insurance – fire, theft, natural disaster","Travel Insurance – trip cancellation, medical emergency abroad","Marine Insurance – cargo and hull insurance","Crop Insurance – PMFBY (Pradhan Mantri Fasal Bima Yojana)","Commercial/Liability Insurance – business risks"],
+           regulator:"IRDAI",
+           keywords:["IRDAI","Motor insurance","Health insurance","PMFBY","Third-party","Comprehensive","Indemnity"]
+         }
+        },
+        {title:"National Pension Scheme (NPS)",stars:"★★★★",tag:"u3",
+         content:{
+           def:"NPS is a voluntary, long-term retirement savings scheme launched by the Government of India in 2004 (for government employees) and 2009 (for all citizens). Regulated by PFRDA.",
+           features:["Voluntary and portable across jobs","Two tiers: Tier I (pension account, withdrawal restrictions) and Tier II (voluntary savings, no restriction)","Professional fund management by registered Pension Fund Managers","Market-linked returns (equity, corporate bonds, government securities)","Tax benefits: ₹1.5 lakh under Section 80C + additional ₹50,000 under 80CCD(1B)","Minimum ₹500/contribution","Annuity purchase mandatory at retirement (40% of corpus)"],
+           process:["Open NPS account (PRAN) → Regular contributions → Fund allocation (E/C/G) → Maturity (60 yrs) → 40% annuity + 60% lump sum"],
+           keywords:["NPS","PFRDA","PRAN","Tier I","Tier II","Annuity","80CCD","Pension fund manager","Atal Pension Yojana"]
+         }
+        },
+        {title:"Marketing of Pension Funds",stars:"★★★★",tag:"u3",
+         content:{
+           def:"Marketing of pension funds involves promoting retirement savings products to individuals through awareness campaigns, employer tie-ups, and distributor networks.",
+           strategies:["Employer-based enrolment (corporate NPS)","Awareness campaigns (PFRDA's Pension Prerna)","Tax benefit marketing (80C + 80CCD)","Point of Need marketing – at salary account opening","Digital platforms and mobile apps","Comparison with EPF/PPF to highlight NPS benefits","Financial advisor networks","Target young earners for long-term compounding messaging"],
+           challenges:["Low awareness about NPS","Preference for fixed guaranteed returns (FDs, PPF)","Complex withdrawal rules","Competition from EPF, PPF, LIC"],
+           keywords:["PFRDA","APY","Corporate NPS","Compounding","Tax benefit","Retirement planning"]
+         }
+        }
+      ],
+      shortNotes:[
+        "What is a mutual fund? Explain its key features",
+        "Explain the concept of SIP (Systematic Investment Plan)",
+        "What is NAV? How is it calculated?",
+        "Distinguish between open-ended and close-ended mutual funds",
+        "What is ELSS? What are its tax benefits?",
+        "Explain the concept of ULIP",
+        "Distinguish between term insurance and endowment plan",
+        "What is health insurance? Explain its types",
+        "What is motor insurance? Distinguish between third-party and comprehensive",
+        "Explain the National Pension Scheme (NPS) and its features",
+        "What is AMFI? What is its role?",
+        "What are the challenges in marketing mutual funds in India?",
+        "Explain the concept of Atal Pension Yojana (APY)",
+        "What is PMFBY?",
+        "Explain IRDAI and its role in regulating insurance"
+      ],
+      longQs:[
+        "What are the unique characteristics of Mutual Funds in India? What marketing strategies are used to market mutual funds? Discuss with suitable examples.",
+        "What are the challenges that cause mutual funds to be described as an under-tapped market in India? How can these challenges be addressed?",
+        "Explain the different types of non-life insurance products available in the Indian market and describe the major benefits they offer.",
+        "Give the classification of insurance products in life insurance and non-life insurance, explaining the types of risks covered under each category.",
+        "What is the National Pension Scheme (NPS)? Explain its features, structure, and tax benefits.",
+        "What are pension funds? What marketing strategies are involved in marketing pension funds in India vs abroad?",
+        "Discuss the marketing strategies used for life insurance products in India. How do companies educate customers?",
+        "Explain the role of SEBI and AMFI in regulating and promoting mutual funds in India.",
+        "Discuss the marketing mix for mutual fund products. How are the 7Ps applied?",
+        "How has digitisation transformed the distribution of mutual funds and insurance products in India?",
+        "Compare the features of NPS with EPF and PPF from a marketing perspective.",
+        "Explain the concept of goal-based financial planning and how it is used in marketing mutual funds.",
+        "What is the significance of investor education in mutual fund marketing? Discuss SEBI's initiatives.",
+        "Discuss the role of bancassurance in the distribution of insurance products.",
+        "How are ULIP products marketed? What are the regulatory requirements?"
+      ]
+    },
+    {
+      id:"u4",label:"Unit IV",title:"Distribution & Globalisation",
+      topics:[
+        {title:"Concept of Distribution in Financial Services",stars:"★★★★",tag:"u4",
+         content:{
+           def:"Distribution in financial services refers to the methods and channels through which financial products and services are delivered to end consumers.",
+           types:["Direct distribution – bank branches, own sales force","Indirect distribution – agents, brokers, DSAs (Direct Selling Agents)","Online/Digital – websites, mobile apps, fintech platforms","Bancassurance – banks distributing insurance","Third-party distribution – NBFCs, financial advisors"],
+           factors:["Nature of product","Customer preferences","Cost of distribution","Geographic reach","Regulatory requirements"],
+           keywords:["Distribution channel","Bancassurance","DSA","Fintech","Omni-channel","IFA"]
+         }
+        },
+        {title:"Multiple Delivery Channels",stars:"★★★★★",tag:"u4",
+         content:{
+           def:"Multiple delivery channels refer to the various touchpoints through which a bank delivers services to its customers. Modern banks use an omni-channel approach.",
+           types:[
+             "Branch Banking – traditional face-to-face service",
+             "ATM (Automated Teller Machine) – 24/7 cash and basic transactions",
+             "Internet Banking – online portal for full-service banking",
+             "Mobile Banking – banking via smartphone app",
+             "Telephone Banking – 24/7 call centre services",
+             "Kiosk Banking – self-service kiosks in public places",
+             "Business Correspondents (BC) – bank agents in rural areas (financial inclusion)",
+             "POS (Point of Sale) terminals – merchant payment at retail counters",
+             "Video Banking – virtual meetings with banker"
+           ],
+           importance:["24/7 availability","Wider geographic reach","Lower transaction cost","Improved customer experience","Supports financial inclusion"],
+           keywords:["ATM","Internet banking","Mobile banking","Omni-channel","BC model","Kiosk","POS"]
+         }
+        },
+        {title:"Bancassurance",stars:"★★★★",tag:"u4",
+         content:{
+           def:"Bancassurance is a partnership or arrangement between a bank and an insurance company, whereby the insurance company uses the bank's sales channels to sell its insurance products.",
+           features:["Bank acts as corporate agent of insurer","Leverages bank's existing customer base","Convenience for customers (one-stop shop)","Revenue sharing between bank and insurer","Both life and non-life products distributed"],
+           advantages:["Cost-effective distribution","Trusted channel (customers trust banks)","Wider penetration","Cross-selling opportunity for banks"],
+           regulation:"Regulated by IRDAI. Each bank can tie up with one life, one non-life, and one health insurance company.",
+           keywords:["Bancassurance","Corporate agent","IRDAI","Cross-selling","Insurance penetration"]
+         }
+        },
+        {title:"Marketing Information and Research in Banking",stars:"★★★",tag:"u4",
+         content:{
+           def:"Marketing research in banking involves systematic gathering, recording, and analysing of data about issues relating to marketing financial products and services.",
+           process:["Define research problem","Secondary data collection (RBI reports, FICCI, industry data)","Primary research (surveys, interviews, focus groups)","Analysis (regression, factor analysis)","Report and recommendations"],
+           uses:["Product development","Pricing decisions","Channel selection","Customer satisfaction measurement","New market entry"],
+           keywords:["MIS","Market research","Primary data","Secondary data","Customer satisfaction","NPS score"]
+         }
+        },
+        {title:"Public Relations, Publicity & Image Building",stars:"★★★★",tag:"u4",
+         content:{
+           def:"Public relations (PR) in banking involves managing and directing the flow of information between a bank and its public (customers, media, regulators, investors).",
+           tools:["Press releases and media briefings","Sponsorship of events","Corporate Social Responsibility (CSR) activities","Annual reports and investor communications","Crisis communication management","Social media PR"],
+           imageBuilding:["Strong brand identity (logo, tagline)","Consistent customer service","Community engagement","Award recognitions","Thought leadership (research publications)"],
+           importance:["Builds trust and credibility","Manages negative publicity","Supports new product launches","Attracts talent","Improves stock value"],
+           keywords:["PR","Publicity","Image building","CSR","Brand reputation","Crisis communication","Stakeholder engagement"]
+         }
+        },
+        {title:"Globalisation and its Impact on Financial Services",stars:"★★★★★",tag:"u4",
+         content:{
+           def:"Globalisation refers to the integration of economies, cultures, and societies across the world. In financial services, it means the free flow of capital, services, and financial institutions across borders.",
+           impact:[
+             "Entry of foreign banks and institutions → increased competition",
+             "Technology transfer → digital banking, fintech",
+             "New financial products (derivatives, forex instruments)",
+             "Adoption of international accounting standards (IFRS, Basel norms)",
+             "Enhanced capital flows and FDI",
+             "Greater integration of Indian capital markets with global markets",
+             "Opportunity for Indian banks to expand globally",
+             "Increased regulatory complexity (FATCA, FEMA)"
+           ],
+           challenges:["Competition from global banks","Currency and systemic risk","Regulatory compliance across jurisdictions","Technology and cybersecurity risk"],
+           positives:["Better products and services for customers","Modernisation of Indian banking","Job creation in BFSI sector","Capital market depth"],
+           keywords:["Globalisation","Liberalisation","FDI","Basel norms","FEMA","FATCA","Fintech","Foreign banks"]
+         }
+        }
+      ],
+      shortNotes:[
+        "What are multiple delivery channels in banking?",
+        "Define bancassurance and state its features",
+        "What is the role of ATMs in modern banking?",
+        "Explain the concept of internet banking and its benefits",
+        "What is mobile banking? How has it transformed customer experience?",
+        "Explain the Business Correspondent (BC) model",
+        "What is marketing research in banking? Explain its process",
+        "Explain the concept of public relations in banking",
+        "What is image building? How do banks build their brand image?",
+        "What is CSR in banking? Give examples",
+        "What is globalisation? Explain its meaning in the context of finance",
+        "How has globalisation impacted Indian public sector banks?",
+        "What are the challenges posed by globalisation to Indian financial institutions?",
+        "Explain the concept of financial liberalisation in India",
+        "What is MIS (Marketing Information System) in banking?"
+      ],
+      longQs:[
+        "Explore the role of digital platforms, social media, and mobile apps in reaching and engaging with customers in the insurance and banking industries.",
+        "Define the distribution of financial services and explain its significance. Analyse the factors influencing the choice of distribution channels.",
+        "Retail banking today employs an array of delivery channels. Elaborate on the use of multiple delivery channels.",
+        "What is bancassurance? Explain its features, advantages, and regulatory framework.",
+        "Discuss the role of public relations strategies in managing reputation, crisis communication, and stakeholder engagement in the financial services industry.",
+        "What is globalisation? How has globalisation impacted the financial services industry in India? What changes can be foreseen?",
+        "How have globalisation and liberalisation made Indian public sector banks more competitive? Give examples.",
+        "Explain the concept of marketing information and research in banking. What steps are involved?",
+        "Discuss the concept of image building in banking. How do banks build and maintain their brand image?",
+        "What is the Business Correspondent model? How has it contributed to financial inclusion?",
+        "Explain the role of fintech companies in the distribution of financial services in India.",
+        "Discuss the impact of globalisation on the marketing of insurance products in India.",
+        "How has the liberalisation of the banking sector (1991 onwards) changed the marketing of financial services?",
+        "Discuss Basel III norms and their impact on Indian banking.",
+        "Explain the concept of omni-channel banking and its advantages."
+      ]
+    }
+  ]
+};
+
+function showSection(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function toggleTopic(el){
+  const body=el.nextElementSibling;
+  const chev=el.querySelector('.chev');
+  const isOpen=body.classList.contains('open');
+  document.querySelectorAll('.topic-body').forEach(b=>{b.classList.remove('open')});
+  document.querySelectorAll('.chev').forEach(c=>{c.classList.remove('open')});
+  if(!isOpen){body.classList.add('open');chev.classList.add('open');}
+}
+
+function buildPYQ(){
+  const tbody=document.getElementById('pyq-table-body');
+  const unitColors=['','tag-u1','tag-u2','tag-u3','tag-u4'];
+  DATA.pyqTopics.forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td style="padding:7px 10px;font-size:12px;line-height:1.4">${r.topic}</td>
+    <td style="padding:7px 8px;text-align:center"><span class="tag ${unitColors[r.unit]}">${r.years.join(', ')}</span></td>
+    <td style="padding:7px 8px;text-align:center;font-weight:500">${r.freq}</td>
+    <td style="padding:7px 8px;text-align:center;font-size:11px;color:var(--color-text-secondary)">${r.marks}</td>
+    <td style="padding:7px 8px;text-align:center;font-size:12px">${r.prob}</td>`;
+    tr.style.borderBottom='0.5px solid var(--color-border-tertiary)';
+    tbody.appendChild(tr);
+  });
+
+  const rqDiv=document.getElementById('repeated-qs');
+  DATA.repeatedQs.forEach((q,i)=>{
+    const d=document.createElement('div');
+    d.className='q-item';
+    d.innerHTML=`<div class="q-num">Q${i+1} · ${q.years}</div>${q.q}`;
+    rqDiv.appendChild(d);
+  });
+
+  const snDiv=document.getElementById('short-notes-list');
+  DATA.shortNotes.forEach(s=>{
+    const d=document.createElement('div');
+    d.className='q-item';
+    d.textContent=s;
+    snDiv.appendChild(d);
+  });
+}
+
+function buildNotes(){
+  const tabs=document.getElementById('unit-tabs');
+  const contents=document.getElementById('unit-contents');
+  DATA.units.forEach((u,i)=>{
+    const tb=document.createElement('button');
+    tb.className='unit-tab'+(i===0?' active':'');
+    tb.textContent=u.label+' – '+u.title.split(' ')[0]+(u.title.split(' ')[1]?' '+u.title.split(' ')[1]:'');
+    tb.onclick=()=>{
+      document.querySelectorAll('#unit-tabs .unit-tab').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.unit-content').forEach(c=>c.classList.remove('active'));
+      tb.classList.add('active');
+      document.getElementById('uc-'+u.id).classList.add('active');
+    };
+    tabs.appendChild(tb);
+
+    const div=document.createElement('div');
+    div.className='unit-content'+(i===0?' active':'');
+    div.id='uc-'+u.id;
+
+    let html=`<div class="card"><div class="card-title">${u.title}</div>`;
+    u.topics.forEach(t=>{
+      html+=`<div class="topic">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-title">${t.title}</div>
+          <div class="topic-meta"><span class="stars" style="font-size:11px">${t.stars}</span><i class="ti ti-chevron-down chev" aria-hidden="true"></i></div>
+        </div>
+        <div class="topic-body">`;
+      const c=t.content;
+      if(c.def) html+=`<div style="margin-bottom:10px"><span style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">DEFINITION</span><div class="dim" style="margin-top:4px">${c.def}</div></div>`;
+      if(c.features) html+=`<div style="margin-bottom:10px"><span style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">FEATURES</span><ul style="margin-top:4px;padding-left:18px">${c.features.map(f=>`<li class="dim">${f}</li>`).join('')}</ul></div>`;
+      if(c.types) html+=`<div style="margin-bottom:10px"><span style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">TYPES</span><ul style="margin-top:4px;padding-left:18px">${c.types.map(f=>`<li class="dim">${f}</li>`).join('')}</ul></div>`;
+      if(c.importance) html+=`<div style="margin-bottom:10px"><span style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">IMPORTANCE</span><ul style="margin-top:4px;padding-left:18px">${c.importance.map(f=>`<li class="dim">${f}</li>`).join('')}</ul></div>`;
+      if(c.challenges) html+=`<div style="margin-bottom:10px"><span style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">CHALLENGES</span><ul style="margin-top:4px;padding-left:18px">${c.challenges.map(f=>`<li class="dim">${f}</li>`).join('')}</ul></div>`;
+      if(c.strategies) html+=`<div style="margin-bottom:10px"><span style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">STRATEGIES</span><ul style="margin-top:4px;padding-left:18px">${c.strategies.map(f=>`<li class="dim">${f}</li>`).join('')}</ul></div>`;
+      if(c.advantages) html+=`<div style="margin-bottom:10px"><span style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">ADVANTAGES</span><ul style="margin-top:4px;padding-left:18px">${c.advantages.map(f=>`<li class="dim">${f}</li>`).join('')}</ul></div>`;
+      if(c.limitations) html+=`<div style="margin-bottom:10px"><span style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">LIMITATIONS</span><ul style="margin-top:4px;padding-left:18px">${c.limitations.map(f=>`<li class="dim">${f}</li>`).join('')}</ul></div>`;
+      if(c.tools) html+=`<div style="margin-bottom:10px"><span style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">TOOLS / INSTRUMENTS</span><ul style="margin-top:4px;padding-left:18px">${c.tools.map(f=>`<li class="dim">${f}</li>`).join('')}</ul></div>`;
+      if(c.process) html+=`<div style="margin-bottom:10px"><span style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">PROCESS</span><div class="dim" style="margin-top:4px">${Array.isArray(c.process)?c.process.join(' → '):c.process}</div></div>`;
+      if(c.impact) html+=`<div style="margin-bottom:10px"><span style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">IMPACT</span><ul style="margin-top:4px;padding-left:18px">${c.impact.map(f=>`<li class="dim">${f}</li>`).join('')}</ul></div>`;
+      if(c.positives) html+=`<div style="margin-bottom:10px"><span style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">POSITIVE IMPACTS</span><ul style="margin-top:4px;padding-left:18px">${c.positives.map(f=>`<li class="dim">${f}</li>`).join('')}</ul></div>`;
+      if(c.regulator) html+=`<div style="margin-bottom:10px"><span style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">REGULATOR</span><div class="dim" style="margin-top:4px">${c.regulator}</div></div>`;
+      if(c.imageBuilding) html+=`<div style="margin-bottom:10px"><span style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">IMAGE BUILDING TOOLS</span><ul style="margin-top:4px;padding-left:18px">${c.imageBuilding.map(f=>`<li class="dim">${f}</li>`).join('')}</ul></div>`;
+      if(c.regulation) html+=`<div style="margin-bottom:10px"><span style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">REGULATION</span><div class="dim" style="margin-top:4px">${c.regulation}</div></div>`;
+      if(c.uses) html+=`<div style="margin-bottom:10px"><span style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">USES</span><ul style="margin-top:4px;padding-left:18px">${c.uses.map(f=>`<li class="dim">${f}</li>`).join('')}</ul></div>`;
+      if(c.factors) html+=`<div style="margin-bottom:10px"><span style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">FACTORS</span><ul style="margin-top:4px;padding-left:18px">${c.factors.map(f=>`<li class="dim">${f}</li>`).join('')}</ul></div>`;
+      if(c.keywords) html+=`<div><span style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">EXAM KEYWORDS</span><div style="margin-top:6px">${c.keywords.map(k=>`<span class="kw">${k}</span>`).join('')}</div></div>`;
+      html+=`</div></div>`;
+    });
+    html+=`</div>`;
+
+    html+=`<div class="card"><div class="card-title">Expected short notes (5 marks)</div>`;
+    u.shortNotes.forEach((q,i)=>{html+=`<div class="q-item"><span class="q-num">SN${i+1}</span>${q}</div>`;});
+    html+=`</div>`;
+
+    html+=`<div class="card"><div class="card-title">Expected long questions (12.5 marks)</div>`;
+    u.longQs.forEach((q,i)=>{html+=`<div class="q-item"><span class="q-num">LQ${i+1}</span>${q}</div>`;});
+    html+=`</div>`;
+
+    div.innerHTML=html;
+    contents.appendChild(div);
+  });
+}
+
+const revSheets=[
+  {id:'reg',label:'Regulators',content:`
+    <div class="revision-block rb-blue"><strong>RBI</strong> – Reserve Bank of India · Controls monetary policy, banking regulation, forex</div>
+    <div class="revision-block rb-blue"><strong>SEBI</strong> – Securities & Exchange Board of India · Regulates capital markets, mutual funds, stock exchanges</div>
+    <div class="revision-block rb-blue"><strong>IRDAI</strong> – Insurance Regulatory & Development Authority of India · Regulates all insurance companies</div>
+    <div class="revision-block rb-blue"><strong>PFRDA</strong> – Pension Fund Regulatory & Development Authority · Regulates NPS and pension funds</div>
+    <div class="revision-block rb-blue"><strong>AMFI</strong> – Association of Mutual Funds in India · Industry body for MF; issues ARN to distributors</div>
+    <div class="revision-block rb-blue"><strong>NHB</strong> – National Housing Bank · Regulates housing finance companies (HFCs)</div>
+    <div class="revision-block rb-blue"><strong>NABARD</strong> – National Bank for Agriculture and Rural Development · Rural/agricultural finance</div>
+  `},
+  {id:'products',label:'Banking Products',content:`
+    <div class="revision-block rb-green"><strong>Housing Loan</strong> – Secured, LTV up to 90%, regulated by NHB/RBI, tax benefit u/s 24(b) & 80C</div>
+    <div class="revision-block rb-green"><strong>Personal Loan</strong> – Unsecured, higher rate, no collateral, quick disbursal</div>
+    <div class="revision-block rb-green"><strong>Education Loan</strong> – Moratorium = course + 1 year, govt interest subsidy schemes</div>
+    <div class="revision-block rb-green"><strong>Auto/Conveyance Loan</strong> – Secured against vehicle, LTV up to 85%</div>
+    <div class="revision-block rb-green"><strong>Debit Card</strong> – Linked to account, immediate debit, PIN secured</div>
+    <div class="revision-block rb-green"><strong>Credit Card</strong> – Credit line, pay later, EMI option, reward points, higher risk</div>
+    <div class="revision-block rb-green"><strong>BSBD Account</strong> – Basic Savings Bank Deposit = zero balance, financial inclusion, Jan Dhan</div>
+    <div class="revision-block rb-green"><strong>Delivery Channels</strong> – Branch, ATM, Net Banking, Mobile Banking, Kiosk, BC Model, POS, Video Banking</div>
+  `},
+  {id:'mf',label:'Mutual Funds & Insurance',content:`
+    <div class="revision-block rb-amber"><strong>NAV</strong> – Net Asset Value = (Assets – Liabilities) / No. of units</div>
+    <div class="revision-block rb-amber"><strong>SIP</strong> – Systematic Investment Plan · Regular fixed investment · Rupee cost averaging</div>
+    <div class="revision-block rb-amber"><strong>ELSS</strong> – Equity Linked Savings Scheme · 3-yr lock-in · Tax benefit u/s 80C</div>
+    <div class="revision-block rb-amber"><strong>Types of MF</strong> – Equity / Debt / Hybrid / Liquid / Index / ETF / ELSS / Solution-oriented</div>
+    <div class="revision-block rb-amber"><strong>ULIP</strong> – Unit Linked Insurance Plan · Insurance + investment · Market-linked returns</div>
+    <div class="revision-block rb-amber"><strong>Term Insurance</strong> – Pure risk cover · No maturity benefit · Cheapest form</div>
+    <div class="revision-block rb-amber"><strong>Non-Life Insurance</strong> – Health, Motor (mandatory 3rd party), Home, Travel, Marine, Crop (PMFBY)</div>
+    <div class="revision-block rb-amber"><strong>Bancassurance Limit</strong> – 1 Life + 1 Non-Life + 1 Health insurer per bank (IRDAI)</div>
+  `},
+  {id:'nps',label:'NPS Sheet',content:`
+    <div class="revision-block rb-coral"><strong>Full form</strong> – National Pension System</div>
+    <div class="revision-block rb-coral"><strong>Launch</strong> – 2004 (Govt employees), 2009 (All citizens)</div>
+    <div class="revision-block rb-coral"><strong>Regulator</strong> – PFRDA (Pension Fund Regulatory and Development Authority)</div>
+    <div class="revision-block rb-coral"><strong>Tiers</strong> – Tier I: mandatory pension a/c, Tier II: voluntary savings a/c</div>
+    <div class="revision-block rb-coral"><strong>Fund options</strong> – E (Equity), C (Corporate bonds), G (Government securities)</div>
+    <div class="revision-block rb-coral"><strong>Tax benefit</strong> – ₹1.5L u/s 80C + ₹50,000 u/s 80CCD(1B) = up to ₹2L total</div>
+    <div class="revision-block rb-coral"><strong>Withdrawal</strong> – 60 yrs: 60% lump sum + 40% compulsory annuity</div>
+    <div class="revision-block rb-coral"><strong>Min contribution</strong> – ₹500/contribution, ₹1000/year</div>
+    <div class="revision-block rb-coral"><strong>PRAN</strong> – Permanent Retirement Account Number (unique, portable)</div>
+    <div class="revision-block rb-coral"><strong>Related scheme</strong> – Atal Pension Yojana (APY) for unorganised sector workers</div>
+  `},
+  {id:'mktg',label:'Banking Marketing',content:`
+    <div class="revision-block rb-purple"><strong>7Ps</strong> – Product, Price, Place, Promotion, People, Process, Physical Evidence</div>
+    <div class="revision-block rb-purple"><strong>CRM</strong> – Customer Relationship Mgmt; goal = lifetime value, retention, loyalty</div>
+    <div class="revision-block rb-purple"><strong>PR Tools</strong> – Press releases, sponsorships, CSR, annual reports, social media, crisis comm.</div>
+    <div class="revision-block rb-purple"><strong>Globalisation impact</strong> – More competition, better products, Basel norms, fintech, FDI</div>
+    <div class="revision-block rb-purple"><strong>Challenges in MFS marketing</strong> – Intangibility, trust, regulation, literacy, differentiation</div>
+    <div class="revision-block rb-purple"><strong>Bancassurance</strong> – Bank distributes insurance; 1 life + 1 non-life + 1 health per bank</div>
+    <div class="revision-block rb-purple"><strong>Image Building</strong> – Brand identity + consistent service + CSR + awards + thought leadership</div>
+    <div class="revision-block rb-purple"><strong>BC Model</strong> – Business Correspondents = banking agents in rural/semi-urban areas</div>
+  `}
+];
+
+function buildRevision(){
+  const tabs=document.getElementById('rev-tabs');
+  const contents=document.getElementById('rev-contents');
+  revSheets.forEach((s,i)=>{
+    const tb=document.createElement('button');
+    tb.className='unit-tab'+(i===0?' active':'');
+    tb.textContent=s.label;
+    tb.onclick=()=>{
+      document.querySelectorAll('#rev-tabs .unit-tab').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('#rev-tabs ~ div .unit-content').forEach(c=>c.classList.remove('active'));
+      tb.classList.add('active');
+      document.getElementById('rc-'+s.id).classList.add('active');
+    };
+    tabs.appendChild(tb);
+    const div=document.createElement('div');
+    div.className='unit-content'+(i===0?' active':'');
+    div.id='rc-'+s.id;
+    div.innerHTML=`<div class="card">${s.content}</div>`;
+    contents.appendChild(div);
+  });
+}
+
+const importanceData=[
+  {topic:"Globalisation & Impact on Financial Services",stars:"★★★★★",unit:"Unit IV"},
+  {topic:"Marketing Mix (7Ps) in Banking",stars:"★★★★★",unit:"Unit I"},
+  {topic:"CRM / Relationship Marketing in Financial Services",stars:"★★★★★",unit:"Unit I"},
+  {topic:"Plastic Money / Debit & Credit Cards",stars:"★★★★★",unit:"Unit II"},
+  {topic:"Mutual Funds – Characteristics & Marketing Strategies",stars:"★★★★★",unit:"Unit III"},
+  {topic:"Non-Life Insurance Products",stars:"★★★★★",unit:"Unit III"},
+  {topic:"Multiple Delivery Channels in Banking",stars:"★★★★★",unit:"Unit IV"},
+  {topic:"Marketing of Financial Services – Definition & Significance",stars:"★★★★★",unit:"Unit I"},
+  {topic:"National Pension Scheme (NPS)",stars:"★★★★",unit:"Unit III"},
+  {topic:"Retail Banking Products (Loans overview)",stars:"★★★★",unit:"Unit II"},
+  {topic:"Bancassurance",stars:"★★★★",unit:"Unit IV"},
+  {topic:"Public Relations & Publicity",stars:"★★★★",unit:"Unit IV"},
+  {topic:"Life Insurance Products",stars:"★★★★",unit:"Unit III"},
+  {topic:"Financial Markets in India",stars:"★★★★",unit:"Unit I"},
+  {topic:"Distribution of Financial Services",stars:"★★★★",unit:"Unit IV"},
+  {topic:"Marketing of Pension Funds",stars:"★★★★",unit:"Unit III"},
+  {topic:"Attracting & Retaining Bank Customers",stars:"★★★★",unit:"Unit II"},
+  {topic:"Characteristics of Financial Services",stars:"★★★★",unit:"Unit I"},
+  {topic:"Marketing Research in Banking",stars:"★★★",unit:"Unit IV"},
+  {topic:"Types of Saving Accounts",stars:"★★★",unit:"Unit II"},
+  {topic:"Image Building in Banking",stars:"★★★",unit:"Unit IV"},
+  {topic:"Concept & Importance of Retail Banking",stars:"★★★",unit:"Unit II"},
+];
+
+const predShort=[
+  "What is money market? How is it different from capital market?",
+  "What is the National Pension Scheme? State its features.",
+  "Define Bancassurance. State its features.",
+  "What are the benefits of plastic money over traditional modes of payment?",
+  "Discuss the importance of educating retail investors about mutual funds.",
+  "How have globalisation and liberalisation made Indian public sector banks more competitive?",
+  "Explain the types of saving accounts available in India.",
+  "What is a barter card?",
+  "Explain the role of SEBI in mutual fund regulation.",
+  "What is AMFI and what does ARN signify?",
+];
+
+const predLong=[
+  "Define marketing of financial services and explain its significance. How has it changed over the previous two decades? [HIGH PROBABILITY – asked 2024]",
+  "Explain the concept of relationship marketing / CRM. What is its importance in financial services? [HIGH PROBABILITY – asked 2024, 2018]",
+  "Give the classification of insurance products in life and non-life insurance. Explain types of risks under each. [HIGH PROBABILITY – asked 2024]",
+  "Discuss the role of digital platforms, social media, and mobile apps in reaching and engaging customers. [HIGH PROBABILITY – asked 2024]",
+  "Define the distribution of financial services. Analyse factors influencing channel choice. [asked 2024]",
+  "Discuss the role of public relations in managing reputation, crisis communication, and stakeholder engagement. [asked 2024]",
+  "What are the unique characteristics of mutual funds in India? What marketing strategies are used? [asked 2018, 2017]",
+  "Explain the different types of non-life insurance products in the Indian market. [asked 2018, 2017 pattern]",
+  "Retail banking today employs an array of delivery channels. Elaborate. [asked 2018, 2017]",
+  "What is globalisation? How has it impacted the financial services industry in India? [asked 2024, 2018, 2017 – extremely high]",
+];
+
+function buildPredict(){
+  const impList=document.getElementById('importance-list');
+  importanceData.forEach(item=>{
+    const div=document.createElement('div');
+    div.className='star-row';
+    div.innerHTML=`<span style="font-size:13px;flex:1">${item.topic}</span><span class="stars" style="font-size:12px;margin:0 10px">${item.stars}</span><span style="font-size:11px;color:var(--color-text-secondary)">${item.unit}</span>`;
+    impList.appendChild(div);
+  });
+
+  const ps=document.getElementById('pred-short');
+  predShort.forEach((q,i)=>{
+    const d=document.createElement('div');
+    d.className='q-item';
+    d.innerHTML=`<span class="q-num">P${i+1}</span>${q}`;
+    ps.appendChild(d);
+  });
+
+  const pl=document.getElementById('pred-long');
+  predLong.forEach((q,i)=>{
+    const d=document.createElement('div');
+    d.className='q-item';
+    d.innerHTML=`<span class="q-num">L${i+1}</span>${q}`;
+    pl.appendChild(d);
+  });
+}
+
+buildPYQ();
+buildNotes();
+buildRevision();
+buildPredict();
+</script>
